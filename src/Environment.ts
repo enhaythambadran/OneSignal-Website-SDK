@@ -15,6 +15,10 @@ export default class Environment {
     return "iFrame";
   }
 
+  static get TEST() {
+    return "test";
+  }
+
   static isEs6DebuggingModule() {
     return false;
   }
@@ -23,8 +27,10 @@ export default class Environment {
     if (typeof window === "undefined") {
       if (typeof WorkerLocation !== "undefined" && location instanceof WorkerLocation)
         return Environment.SERVICE_WORKER;
+      else return Environment.TEST;
     }
     else {
+      console.log('b');
       // If the window is the root top-most level
       if (window === window.top) {
         if (location.href.indexOf("initOneSignal") !== -1 ||

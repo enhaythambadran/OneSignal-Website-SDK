@@ -1,4 +1,4 @@
-export async function throwsAsync(testContext, func, error) {
+export async function throws(testContext, func, error) {
   try {
     await func();
     testContext.fail('expected exception not caught');

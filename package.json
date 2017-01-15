@@ -80,6 +80,7 @@
     "chalk": "^1.1.3",
     "clean-css-brunch": "^2.0.0",
     "commander": "^2.9.0",
+    "fake-indexeddb": "^1.0.8",
     "fs-extra": "^1.0.0",
     "humanize": "^0.0.9",
     "javascript-brunch": "^2.0.0",
@@ -96,7 +97,7 @@
   },
   "ava": {
     "files": [
-      "build/javascript/test/unit/**/*.js"
+      "build/javascript/test/unit/public-sdk-apis/setDefaultNotificationUrl.js"
     ],
     "source": [
       "build/javascript/src/**/*.js"
@@ -105,6 +106,7 @@
     "failFast": true,
     "powerAssert": true,
     "verbose": false,
+    "timeout": "5s",
     "watch": true
   }
 }
