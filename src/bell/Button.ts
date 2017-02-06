@@ -1,12 +1,10 @@
-import {removeDomElement, addDomElement} from '../utils';
-import Event from '../Event';
-import ActiveAnimatedElement from './ActiveAnimatedElement';
-import Bell from './Bell';
-import LimitStore from '../LimitStore';
-import Message from './Message';
+import {removeDomElement, addDomElement} from "../utils";
+import Event from "../Event";
+import ActiveAnimatedElement from "./ActiveAnimatedElement";
+import Bell from "./Bell";
+import LimitStore from "../LimitStore";
+import Message from "./Message";
 import SubscriptionHelper from "../helpers/SubscriptionHelper";
-import Database from "../Database";
-import OneSignal from "../OneSignal";
 
 
 export default class Button extends ActiveAnimatedElement {

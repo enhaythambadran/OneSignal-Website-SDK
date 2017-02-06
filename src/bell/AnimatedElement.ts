@@ -1,7 +1,7 @@
 import { addCssClass, removeCssClass, contains, once } from '../utils';
 import * as log from 'loglevel';
 import Event from '../Event'
-import OneSignal from "../OneSignal";
+
 
 
 export default class AnimatedElement {

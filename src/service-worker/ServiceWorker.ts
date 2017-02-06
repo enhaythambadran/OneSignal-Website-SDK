@@ -1,14 +1,13 @@
 ///<reference path="../../typings/globals/service_worker_api/index.d.ts"/>
-import { DEV_HOST, DEV_FRAME_HOST, PROD_HOST, API_URL, STAGING_FRAME_HOST } from '../vars';
-import Environment from '../Environment'
-import OneSignalApi from '../OneSignalApi';
-import * as log from 'loglevel';
-import Database from '../Database';
-import { isPushNotificationsSupported, getConsoleStyle, contains, trimUndefined, getDeviceTypeForBrowser, substringAfter, isValidUuid, capitalize } from '../utils';
-import * as objectAssign from 'object-assign';
-import * as swivel from 'swivel';
-import * as Browser from 'bowser';
-import {Notification} from "../models/Notification";
+import {DEV_FRAME_HOST, API_URL, STAGING_FRAME_HOST} from "../vars";
+import Environment from "../Environment";
+import OneSignalApi from "../OneSignalApi";
+import * as log from "loglevel";
+import Database from "../services/Database";
+import {getConsoleStyle, contains, trimUndefined, getDeviceTypeForBrowser, isValidUuid, capitalize} from "../utils";
+import * as objectAssign from "object-assign";
+import * as swivel from "swivel";
+import * as Browser from "bowser";
 
 declare var self: ServiceWorkerGlobalScope;
 

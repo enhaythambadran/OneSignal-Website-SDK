@@ -105,9 +105,8 @@ function onBuild(argv) {
 function clean(config) {
   return new Promise((resolve, reject) => {
     const rmDir = spawn('rm', [
-      '--recursive',
-      '--preserve-root',
-      '--force',
+      '-r',
+      '-f',
       config.get('build:tempDirectory')
     ]);
     rmDir.stdout.on('data', data => {
@@ -211,7 +210,8 @@ function runModuleBundler(config) {
         sdkBundleName: config.get('build:sdkBundleName'),
         integrationTestsBundleName: config.get('build:integrationTestsBundleName'),
         unitTestsBundleName: config.get('build:unitTestsBundleName'),
-        isTesting: config.get('tests')
+        isTesting: config.get('tests'),
+        'LOGGY_STACKS': 'true'
       })
     });
     bundler.stdout.on('data', data => {

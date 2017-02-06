@@ -1,29 +1,18 @@
-import { DEV_HOST, DEV_FRAME_HOST, PROD_HOST, API_URL } from '../vars';
-import Environment from '../Environment';
-import OneSignalApi from '../OneSignalApi';
-import * as log from 'loglevel';
-import LimitStore from '../LimitStore';
+import {DEV_FRAME_HOST} from "../vars";
+import Environment from "../Environment";
+import * as log from "loglevel";
+import LimitStore from "../LimitStore";
 import Event from "../Event";
-import Database from '../Database';
-import * as Browser from 'bowser';
-import {
-  getConsoleStyle, contains, normalizeSubdomain, getDeviceTypeForBrowser, capitalize, once,
-  isPushNotificationsSupported, getUrlQueryParam, wipeLocalIndexedDb, unsubscribeFromPush
-} from '../utils';
-import * as objectAssign from 'object-assign';
-import * as EventEmitter from 'wolfy87-eventemitter';
-import * as heir from 'heir';
-import * as swivel from 'swivel';
-import Postmam from '../Postmam';
-import * as Cookie from 'js-cookie';
+import Database from "../services/Database";
+import * as Browser from "bowser";
+import {getConsoleStyle, once} from "../utils";
+import Postmam from "../Postmam";
 import MainHelper from "./MainHelper";
 import ServiceWorkerHelper from "./ServiceWorkerHelper";
-import IndexedDb from "../IndexedDb";
 import SubscriptionHelper from "./SubscriptionHelper";
 import EventHelper from "./EventHelper";
-import { InvalidStateError, InvalidStateReason } from "../errors/InvalidStateError";
+import {InvalidStateError, InvalidStateReason} from "../errors/InvalidStateError";
 import AlreadySubscribedError from "../errors/AlreadySubscribedError";
-import OneSignal from "../OneSignal";
 
 
 export default class InitHelper {
@@ -115,7 +104,6 @@ export default class InitHelper {
       });
     }
 
-    SubscriptionHelper.checkAndWipeUserSubscription();
     MainHelper.checkAndDoHttpPermissionRequest();
   }
 

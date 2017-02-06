@@ -3,7 +3,7 @@ import * as log from 'loglevel';
 import Event from '../Event';
 import AnimatedElement from './AnimatedElement';
 import * as objectAssign from 'object-assign';
-import OneSignal from "../OneSignal";
+
 
 export default class ActiveAnimatedElement extends AnimatedElement {
 

@@ -1,9 +1,8 @@
-import { API_URL } from './vars'
-import * as log from 'loglevel';
-import { contains, trimUndefined, wipeIndexedDb, unsubscribeFromPush } from './utils'
+import {API_URL} from "./vars";
+import * as log from "loglevel";
+import {contains, trimUndefined} from "./utils";
 import {Uuid} from "./models/Uuid";
-import SubscriptionHelper from "./helpers/SubscriptionHelper";
-import * as objectAssign from 'object-assign';
+import * as objectAssign from "object-assign";
 import Environment from "./Environment";
 
 

@@ -1,17 +1,11 @@
-import OneSignalApi from '../OneSignalApi';
-import * as log from 'loglevel';
-import LimitStore from '../LimitStore';
+import OneSignalApi from "../OneSignalApi";
+import * as log from "loglevel";
+import LimitStore from "../LimitStore";
 import Event from "../Event";
-import Database from '../Database';
-import * as Browser from 'bowser';
-import {
-  getConsoleStyle, contains, normalizeSubdomain, getDeviceTypeForBrowser, capitalize,
-  isPushNotificationsSupported, getUrlQueryParam, executeAndTimeoutPromiseAfter, wipeLocalIndexedDb,
-  unsubscribeFromPush, decodeHtmlEntities, logMethodCall
-} from '../utils';
+import Database from "../services/Database";
+import {decodeHtmlEntities, logMethodCall} from "../utils";
 import MainHelper from "./MainHelper";
 import SubscriptionHelper from "./SubscriptionHelper";
-import OneSignal from "../OneSignal";
 
 
 export default class EventHelper {

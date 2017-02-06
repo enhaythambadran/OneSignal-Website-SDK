@@ -1,0 +1,28 @@
+import "../../support/polyfills/polyfills";
+import test from "ava";
+import Database from "../../../src/services/Database";
+import {TestEnvironment} from "../../support/sdk/TestEnvironment";
+import OneSignal from "../../../src/OneSignal";
+
+
+test("title can be null", async t => {
+  const onesignal = TestEnvironment.initialize();
+  await onesignal.setDefaultTitle(null);
+  const appState = await onesignal.context.database.getAppState();
+  t.is(appState.defaultNotificationTitle, null);
+});
+
+test.only("title can be empty", async t => {
+  TestEnvironment.initialize();
+  await OneSignal.setDefaultTitle('');
+  const appState = await Database.getAppState();
+  console.log("AppState", appState);
+  t.is(appState.defaultNotificationTitle, '');
+});
+
+test("title can be some text", async t => {
+  TestEnvironment.initialize();
+  await OneSignal.setDefaultTitle('My notification title');
+  const appState = await Database.getAppState();
+  t.is(appState.defaultNotificationTitle, 'My notification title');
+});

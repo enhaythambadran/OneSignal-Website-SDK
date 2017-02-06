@@ -1,7 +1,7 @@
 import * as log from 'loglevel';
 import Environment from './Environment';
 import { getConsoleStyle, contains, capitalize } from './utils';
-import OneSignal from "./OneSignal";
+
 
 
 const SILENT_EVENTS = [

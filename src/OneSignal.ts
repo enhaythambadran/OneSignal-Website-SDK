@@ -1,27 +1,33 @@
-import { DEV_HOST, DEV_FRAME_HOST, PROD_HOST, API_URL, STAGING_FRAME_HOST, DEV_PREFIX, STAGING_PREFIX } from './vars';
-import Environment from './Environment';
-import OneSignalApi from './OneSignalApi';
-import IndexedDb from './IndexedDb';
-import * as log from 'loglevel';
+import {DEV_FRAME_HOST, API_URL, STAGING_FRAME_HOST} from "./vars";
+import Environment from "./Environment";
+import OneSignalApi from "./OneSignalApi";
+import IndexedDb from "./services/IndexedDb";
+import * as log from "loglevel";
 import Event from "./Event";
-import Bell from "./bell/Bell";
-import * as Cookie from 'js-cookie';
-import Database from './Database';
-import * as Browser from 'bowser';
+import * as Cookie from "js-cookie";
+import Database from "./services/Database";
+import * as Browser from "bowser";
 import {
-  isPushNotificationsSupported, logMethodCall, isValidEmail, awaitOneSignalInitAndSupported, getConsoleStyle,
-  contains, unsubscribeFromPush, decodeHtmlEntities, getUrlQueryParam, executeAndTimeoutPromiseAfter,
-  wipeLocalIndexedDb, prepareEmailForHashing, executeCallback, once, md5, sha1, awaitSdkEvent
-} from './utils';
-import { ValidatorUtils, ValidatorOptions } from './utils/ValidatorUtils';
-import * as objectAssign from 'object-assign';
-import * as EventEmitter from 'wolfy87-eventemitter';
-import * as heir from 'heir';
-import * as swivel from 'swivel';
-import Postmam from './Postmam';
-import EventHelper from './helpers/EventHelper';
-import MainHelper from './helpers/MainHelper';
-import Popover from './popover/Popover';
+  isPushNotificationsSupported,
+  logMethodCall,
+  isValidEmail,
+  awaitOneSignalInitAndSupported,
+  getConsoleStyle,
+  unsubscribeFromPush,
+  prepareEmailForHashing,
+  executeCallback,
+  md5,
+  sha1,
+  awaitSdkEvent
+} from "./utils";
+import {ValidatorUtils} from "./utils/ValidatorUtils";
+import * as objectAssign from "object-assign";
+import * as EventEmitter from "wolfy87-eventemitter";
+import * as heir from "heir";
+import * as swivel from "swivel";
+import EventHelper from "./helpers/EventHelper";
+import MainHelper from "./helpers/MainHelper";
+import Popover from "./popover/Popover";
 import {Uuid} from "./models/Uuid";
 import {InvalidArgumentError, InvalidArgumentReason} from "./errors/InvalidArgumentError";
 import LimitStore from "./LimitStore";
@@ -32,31 +38,38 @@ import SubscriptionHelper from "./helpers/SubscriptionHelper";
 import HttpHelper from "./helpers/HttpHelper";
 import TestHelper from "./helpers/TestHelper";
 import {NotificationActionButton} from "./models/NotificationActionButton";
-import { NotificationPermission } from './models/NotificationPermission';
+import {NotificationPermission} from "./models/NotificationPermission";
 import PermissionMessageDismissedError from "./errors/PermissionMessageDismissedError";
 import PushPermissionNotGrantedError from "./errors/PushPermissionNotGrantedError";
-import { NotSubscribedError } from "./errors/NotSubscribedError";
+import {NotSubscribedError, NotSubscribedReason} from "./errors/NotSubscribedError";
 import AlreadySubscribedError from "./errors/AlreadySubscribedError";
-import { NotSubscribedReason } from "./errors/NotSubscribedError";
-import { PermissionPromptType } from './models/PermissionPromptType';
-import { Notification } from "./models/Notification";
-
+import {PermissionPromptType} from "./models/PermissionPromptType";
+import {Notification} from "./models/Notification";
+import Context from "./models/Context";
 
 
 export default class OneSignal {
+
+  public context: Context;
+
+  constructor() {
+    this.context = {
+      database: new Database("ONE_SIGNAL_SDK_DB")
+    };
+  }
 
   /**
    * Pass in the full URL of the default page you want to open when a notification is clicked.
    * @PublicApi
    */
-  static async setDefaultNotificationUrl(url: string) {
+  async setDefaultNotificationUrl(url: string) {
     if (!ValidatorUtils.isValidUrl(url, { allowNull: true }))
       throw new InvalidArgumentError('url', InvalidArgumentReason.Malformed);
     await awaitOneSignalInitAndSupported();
     logMethodCall('setDefaultNotificationUrl', url);
-    const appState = await Database.getAppState();
+    const appState = await this.context.database.getAppState();
     appState.defaultNotificationUrl = url;
-    await Database.setAppState(appState);
+    await this.context.database.setAppState(appState);
   }
 
   /**
@@ -64,12 +77,12 @@ export default class OneSignal {
    * @remarks Either DB value defaultTitle or pageTitle is used when showing a notification title.
    * @PublicApi
    */
-  static async setDefaultTitle(title: string) {
+  async setDefaultTitle(title: string) {
     await awaitOneSignalInitAndSupported();
     logMethodCall('setDefaultTitle', title);
-    const appState = await Database.getAppState();
+    const appState = await this.context.database.getAppState();
     appState.defaultNotificationTitle = title;
-    await Database.setAppState(appState);
+    await this.context.database.setAppState(appState);
   }
 
   /**
@@ -184,10 +197,8 @@ export default class OneSignal {
                                     .then(() => log.info('Subdomain iFrame loaded'))
       }
 
-      OneSignal.on(Database.EVENTS.REBUILT, EventHelper.onDatabaseRebuilt);
       OneSignal.on(OneSignal.EVENTS.NATIVE_PROMPT_PERMISSIONCHANGED, EventHelper.onNotificationPermissionChange);
       OneSignal.on(OneSignal.EVENTS.SUBSCRIPTION_CHANGED, EventHelper._onSubscriptionChanged);
-      OneSignal.on(Database.EVENTS.SET, EventHelper._onDbValueSet);
       OneSignal.on(OneSignal.EVENTS.SDK_INITIALIZED, InitHelper.onSdkInitialized);
       subdomainPromise.then(() => {
         window.addEventListener('focus', (event) => {
@@ -789,7 +800,7 @@ export default class OneSignal {
   static closeNotifications = ServiceWorkerHelper.closeNotifications;
   static isServiceWorkerActive = ServiceWorkerHelper.isServiceWorkerActive;
   static _showingHttpPermissionRequest = false;
-  static checkAndWipeUserSubscription = SubscriptionHelper.checkAndWipeUserSubscription;
+  static checkAndWipeUserSubscription = function() { }
 
 
   /**
@@ -931,8 +942,9 @@ heir.merge(OneSignal, new EventEmitter());
 
 if (OneSignal.LOGGING)
   log.setDefaultLevel((<any>log).levels.TRACE);
-else
+else {
   log.setDefaultLevel((<any>log).levels.WARN);
+}
 
 log.info(`%cOneSignal Web SDK loaded (version ${OneSignal._VERSION}, ${Environment.getEnv()} environment).`, getConsoleStyle('bold'));
 if (Environment.isEs6DebuggingModule()) {

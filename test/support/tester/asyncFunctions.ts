@@ -6,3 +6,12 @@ export async function throws(testContext, func, error) {
     testContext.truthy(e instanceof error);
   }
 }
+
+export async function notThrows(testContext, func) {
+  try {
+    await func();
+    testContext.pass('no exception thrown; expected result');
+  } catch (e) {
+    testContext.fail(e);
+  }
+}

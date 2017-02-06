@@ -17,7 +17,7 @@
     "morgan": "https://registry.npmjs.org/morgan/-/morgan-1.7.0.tgz",
     "multi-stage-sourcemap": "^0.2.1",
     "node-sass": "https://registry.npmjs.org/node-sass/-/node-sass-3.10.1.tgz",
-    "node-uuid": "https://registry.npmjs.org/node-uuid/-/node-uuid-1.4.7.tgz",
+    "node-uuid": "^1.4.7",
     "npm-css": "https://registry.npmjs.org/npm-css/-/npm-css-0.2.3.tgz",
     "object-assign": "https://registry.npmjs.org/object-assign/-/object-assign-4.1.0.tgz",
     "postcss-discard-comments": "https://registry.npmjs.org/postcss-discard-comments/-/postcss-discard-comments-2.0.4.tgz",
@@ -75,7 +75,9 @@
     "@types/requirejs": "^2.1.28",
     "@types/validator": "^5.7.35",
     "@types/whatwg-fetch": "0.0.32",
-    "ava": "^0.17.0",
+    "ava": "^0.18.1",
+    "babel-polyfill": "^6.22.0",
+    "babel-register": "^6.22.0",
     "brunch": "https://github.com/jasonpang/brunch#add-worker-support",
     "chalk": "^1.1.3",
     "clean-css-brunch": "^2.0.0",
@@ -97,15 +99,18 @@
   },
   "ava": {
     "files": [
-      "build/javascript/test/unit/public-sdk-apis/setDefaultNotificationUrl.js"
+      "build/javascript/test/unit/**/*.js"
     ],
     "source": [
       "build/javascript/src/**/*.js"
     ],
-    "concurrency": 5,
+    "require": [
+      "babel-register",
+      "babel-polyfill"
+    ],
+    "concurrency": 100,
     "failFast": true,
     "powerAssert": true,
-    "verbose": false,
     "timeout": "5s",
     "watch": true
   }

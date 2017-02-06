@@ -4,7 +4,7 @@ import AnimatedElement from './AnimatedElement';
 import * as Browser from 'bowser';
 import Bell from './Bell';
 import { HOST_URL } from '../vars';
-import OneSignal from "../OneSignal";
+
 
 
 export default class Dialog extends AnimatedElement {

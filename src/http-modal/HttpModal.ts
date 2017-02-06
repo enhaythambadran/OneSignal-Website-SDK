@@ -2,7 +2,7 @@ import { removeDomElement, addDomElement, addCssClass } from '../utils';
 import * as log from 'loglevel';
 import Event from '../Event';
 import * as objectAssign from 'object-assign';
-import OneSignal from "../OneSignal";
+
 
 
 export default class HttpModal {

@@ -30,6 +30,8 @@ interface ServiceWorkerGlobalScope {
 declare module ExtendableError {
 }
 
+declare var OneSignal: any;
+
 declare var ExtendableEvent;
 declare var swivel;
 
