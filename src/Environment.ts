@@ -30,7 +30,6 @@ export default class Environment {
       else return Environment.TEST;
     }
     else {
-      console.log('b');
       // If the window is the root top-most level
       if (window === window.top) {
         if (location.href.indexOf("initOneSignal") !== -1 ||

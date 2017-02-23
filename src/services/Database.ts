@@ -17,6 +17,11 @@ export default class Database {
   public emitter: Emitter;
   private database: IndexedDb;
 
+  /* Temp Database Proxy */
+  public static databaseInstanceName: string;
+  public static databaseInstance: Database;
+  /* End Temp Database Proxy */
+
   constructor(private databaseName: string) {
     this.emitter = new Emitter();
     this.database = new IndexedDb(this.databaseName);
@@ -102,7 +107,8 @@ export default class Database {
           }
         });
       } else {
-        return await this.database.put(table, keypath);
+        await this.database.put(table, keypath);
+        resolve();
       }
     });
   }
@@ -285,5 +291,69 @@ export default class Database {
         log.info('User ID:', userId);
       }
     });
+  }
+
+  /* Temp Database Proxy */
+  static ensureSingletonInstance() {
+    if (!Database.databaseInstanceName) {
+      Database.databaseInstanceName = "ONE_SIGNAL_SDK_DB";
+    }
+    if (!Database.databaseInstance) {
+      Database.databaseInstance = new Database(Database.databaseInstanceName);
+    }
+  }
+  /* End Temp Database Proxy */
+
+  static async setSubscription(...args: any[]) {
+    Database.ensureSingletonInstance();
+    return Database.databaseInstance.setSubscription.apply(Database.databaseInstance, args);
+  }
+  static async getSubscription(...args: any[]): Promise<Subscription> {
+    Database.ensureSingletonInstance();
+    return Database.databaseInstance.getSubscription.apply(Database.databaseInstance, args);
+  }
+  static async setServiceWorkerState(...args: any[]) {
+    Database.ensureSingletonInstance();
+    return Database.databaseInstance.setServiceWorkerState.apply(Database.databaseInstance, args);
+  }
+  static async getServiceWorkerState(...args: any[]): Promise<ServiceWorkerState> {
+    Database.ensureSingletonInstance();
+    return Database.databaseInstance.getServiceWorkerState.apply(Database.databaseInstance, args);
+  }
+  static async setServiceWorkerConfig(...args: any[]) {
+    Database.ensureSingletonInstance();
+    return Database.databaseInstance.setServiceWorkerConfig.apply(Database.databaseInstance, args);
+  }
+  static async getServiceWorkerConfig(...args: any[]): Promise<ServiceWorkerConfig> {
+    Database.ensureSingletonInstance();
+    return Database.databaseInstance.getServiceWorkerConfig.apply(Database.databaseInstance, args);
+  }
+  static async setAppState(...args: any[]) {
+    Database.ensureSingletonInstance();
+    return Database.databaseInstance.setAppState.apply(Database.databaseInstance, args);
+  }
+  static async getAppState(...args: any[]): Promise<AppState> {
+    Database.ensureSingletonInstance();
+    return Database.databaseInstance.getAppState.apply(Database.databaseInstance, args);
+  }
+  static async setAppConfig(...args: any[]) {
+    Database.ensureSingletonInstance();
+    return Database.databaseInstance.setAppConfig.apply(Database.databaseInstance, args);
+  }
+  static async getAppConfig(...args: any[]): Promise<AppConfig> {
+    Database.ensureSingletonInstance();
+    return Database.databaseInstance.getAppConfig.apply(Database.databaseInstance, args);
+  }
+  static async remove(...args: any[]) {
+    Database.ensureSingletonInstance();
+    return Database.databaseInstance.remove.apply(Database.databaseInstance, args);
+  }
+  static async put(...args: any[]) {
+    Database.ensureSingletonInstance();
+    return Database.databaseInstance.put.apply(Database.databaseInstance, args);
+  }
+  static async get<T>(...args: any[]): Promise<T> {
+    Database.ensureSingletonInstance();
+    return Database.databaseInstance.put.apply(Database.databaseInstance, args);
   }
 }

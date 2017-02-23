@@ -46,7 +46,7 @@ const argv = yargs
     global: true
   })
   .option('noBundle', {
-    alias: 't',
+    alias: 'nb',
     description: `Do not bundle transpiled JavaScript files into a single OneSignalSDK.js file.
                   Decreaes compilation time, useful for developing and running tests.`,
     requiresArg: false,

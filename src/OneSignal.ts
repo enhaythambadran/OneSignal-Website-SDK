@@ -50,26 +50,18 @@ import Context from "./models/Context";
 
 export default class OneSignal {
 
-  public context: Context;
-
-  constructor() {
-    this.context = {
-      database: new Database("ONE_SIGNAL_SDK_DB")
-    };
-  }
-
   /**
    * Pass in the full URL of the default page you want to open when a notification is clicked.
    * @PublicApi
    */
-  async setDefaultNotificationUrl(url: string) {
+  static async setDefaultNotificationUrl(url: string) {
     if (!ValidatorUtils.isValidUrl(url, { allowNull: true }))
       throw new InvalidArgumentError('url', InvalidArgumentReason.Malformed);
     await awaitOneSignalInitAndSupported();
     logMethodCall('setDefaultNotificationUrl', url);
-    const appState = await this.context.database.getAppState();
+    const appState = await Database.getAppState();
     appState.defaultNotificationUrl = url;
-    await this.context.database.setAppState(appState);
+    await Database.setAppState(appState);
   }
 
   /**
@@ -77,12 +69,12 @@ export default class OneSignal {
    * @remarks Either DB value defaultTitle or pageTitle is used when showing a notification title.
    * @PublicApi
    */
-  async setDefaultTitle(title: string) {
+  static async setDefaultTitle(title: string) {
     await awaitOneSignalInitAndSupported();
     logMethodCall('setDefaultTitle', title);
-    const appState = await this.context.database.getAppState();
+    const appState = await Database.getAppState();
     appState.defaultNotificationTitle = title;
-    await this.context.database.setAppState(appState);
+    await Database.setAppState(appState);
   }
 
   /**

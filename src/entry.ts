@@ -18,8 +18,8 @@ if (Environment.isBrowser()) {
     if (typeof OneSignal !== "undefined")
       var predefinedOneSignalPushes = OneSignal;
 
-    var OneSignal = require('./OneSignal');
-    (window as any).OneSignal = new OneSignal();
+    var OneSignal = require('./OneSignal').default;
+    (window as any).OneSignal = OneSignal;
 
     if (predefinedOneSignalPushes)
       for (var i = 0; i < predefinedOneSignalPushes.length; i++)

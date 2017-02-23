@@ -22,16 +22,9 @@ test("url cannot be missing protocol",
      OneSignal.setDefaultNotificationUrl,
      'test.com');
 
-test("IndexedDb Open 1", async t => {
-  IndexedDb.getInstance();
-});
-
-test("IndexedDb Open 2", async t => {
-  IndexedDb.getInstance();
-});
-
 test("valid url can be set and retrieved", async t => {
   TestEnvironment.initialize();
+  debugger;
   await OneSignal.setDefaultNotificationUrl("https://test.com");
   const appState = await Database.getAppState();
   t.is(appState.defaultNotificationUrl, 'https://test.com');

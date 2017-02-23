@@ -3,20 +3,20 @@ import test from "ava";
 import Database from "../../../src/services/Database";
 import {TestEnvironment} from "../../support/sdk/TestEnvironment";
 import OneSignal from "../../../src/OneSignal";
+import Random from "../../support/tester/Random";
 
 
 test("title can be null", async t => {
-  const onesignal = TestEnvironment.initialize();
-  await onesignal.setDefaultTitle(null);
-  const appState = await onesignal.context.database.getAppState();
+  TestEnvironment.initialize();
+  await OneSignal.setDefaultTitle(null);
+  const appState = await Database.getAppState();
   t.is(appState.defaultNotificationTitle, null);
 });
 
-test.only("title can be empty", async t => {
+test("title can be empty", async t => {
   TestEnvironment.initialize();
   await OneSignal.setDefaultTitle('');
   const appState = await Database.getAppState();
-  console.log("AppState", appState);
   t.is(appState.defaultNotificationTitle, '');
 });
 
