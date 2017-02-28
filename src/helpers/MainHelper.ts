@@ -20,6 +20,7 @@ import HttpModal from "../http-modal/HttpModal";
 import Bell from "../bell/Bell";
 import SubscriptionHelper from "./SubscriptionHelper";
 import EventHelper from "./EventHelper";
+import InitHelper from "./InitHelper";
 
 
 export default class MainHelper {
@@ -376,7 +377,8 @@ export default class MainHelper {
    * Shows the modal on the page users must click on after the local notification prompt to trigger the standard
    * HTTP popup window.
    */
-  static showHttpPermissionRequestPostModal(options) {
+  static async showHttpPermissionRequestPostModal(options?: any) {
+    await InitHelper.ensureSdkStylesLoaded();
     OneSignal.httpPermissionRequestPostModal = new HttpModal(options);
     OneSignal.httpPermissionRequestPostModal.create();
   }

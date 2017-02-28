@@ -159,6 +159,33 @@ export default class InitHelper {
     return Promise.all(opPromises);
   }
 
+  static async ensureSdkStylesLoaded() {
+    return await InitHelper.ensureDocumentResourceLoaded('https://cdn.onesignal.com/sdks/OneSignalSDKStyles.css');
+  }
+
+  static async ensureDocumentResourceLoaded(url) : Promise<any> {
+    console.log("Called ensureDocumentResourceLoaded", url);
+    if (!OneSignal._dynamicResources) {
+      OneSignal._dynamicResources = {};
+    }
+    if (OneSignal._dynamicResources[url]) {
+      return;
+    }
+    OneSignal._dynamicResources[url] = true;
+    return await InitHelper.loadDocumentResourceAsync(url);
+  }
+
+  static async loadDocumentResourceAsync(url): Promise<any> {
+    await new Promise(resolve => {
+      var link = document.createElement('link');
+      link.setAttribute("rel", "stylesheet");
+      link.setAttribute("type", "text/css");
+      link.onload = function() { resolve(); }
+      link.setAttribute("href", url);
+      document.querySelector('head').appendChild(link);
+    });
+  }
+
   static internalInit() {
     log.debug('Called %cinternalInit()', getConsoleStyle('code'));
     Database.get('Ids', 'appId')
@@ -214,16 +241,12 @@ export default class InitHelper {
             });
   }
 
-  static initSaveState() {
-    return MainHelper.getAppId()
-                    .then(appId => {
-                      return Promise.all([
-                        Database.put("Ids", {type: "appId", id: appId}),
-                        Database.put("Options", {key: "pageTitle", value: document.title})
-                      ]).then(() => {
-                        log.info(`OneSignal: Set pageTitle to be '${document.title}'.`);
-                      });
-                    });
+  static async initSaveState() {
+    const appId = await MainHelper.getAppId()
+    await Database.put("Ids", { type: "appId", id: appId });
+    const initialPageTitle = document.title || 'Notification';
+    await Database.put("Options", { key: "pageTitle", value: initialPageTitle });
+    log.info(`OneSignal: Set pageTitle to be '${initialPageTitle}'.`);
   }
 
   static sessionInit(options) {

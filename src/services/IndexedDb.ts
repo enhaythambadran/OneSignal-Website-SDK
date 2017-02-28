@@ -117,7 +117,7 @@ export default class IndexedDb {
         request.onsuccess = () => {
           resolve(request.result);
         };
-        request.onerror = () => {
+        request.onerror = e => {
           reject(request.error);
         };
       });

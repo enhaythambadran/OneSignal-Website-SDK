@@ -27,6 +27,10 @@ interface ServiceWorkerGlobalScope {
   addEventListener(type: "fetch", listener: (this: this, ev: any) => any, ...args): void;
 }
 
+interface TestContext {
+  context: any;
+}
+
 declare module ExtendableError {
 }
 

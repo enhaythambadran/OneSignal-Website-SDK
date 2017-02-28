@@ -134,7 +134,7 @@ class Emitter {
    * @example
    * me.emit('ready', 'param1', {..}, [...]);
    */
-  emit(vargs: any) {
+  emit(...vargs: any[]) {
     let args = [].slice.call(arguments, 0); // converted to array
     let event = args.shift();
     let listeners = this._events[event];

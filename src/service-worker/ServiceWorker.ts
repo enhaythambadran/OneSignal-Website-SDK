@@ -361,6 +361,7 @@ class ServiceWorker {
   /**
    * Given a structured notification object, HTTPS-ifies the notification icon and action button icons, if they exist.
    */
+
   static ensureNotificationResourcesHttps(notification) {
     if (notification) {
       if (notification.icon) {

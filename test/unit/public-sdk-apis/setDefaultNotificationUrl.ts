@@ -23,8 +23,7 @@ test("url cannot be missing protocol",
      'test.com');
 
 test("valid url can be set and retrieved", async t => {
-  TestEnvironment.initialize();
-  debugger;
+  await TestEnvironment.initialize();
   await OneSignal.setDefaultNotificationUrl("https://test.com");
   const appState = await Database.getAppState();
   t.is(appState.defaultNotificationUrl, 'https://test.com');

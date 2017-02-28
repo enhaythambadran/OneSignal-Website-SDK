@@ -11,6 +11,9 @@ import SubscriptionHelper from "../helpers/SubscriptionHelper";
 import {Timestamp} from "../models/Timestamp";
 import Emitter from "../libraries/Emitter";
 
+enum DatabaseEventName {
+  SET
+}
 
 export default class Database {
 
@@ -21,6 +24,8 @@ export default class Database {
   public static databaseInstanceName: string;
   public static databaseInstance: Database;
   /* End Temp Database Proxy */
+
+  public static EVENTS = DatabaseEventName;
 
   constructor(private databaseName: string) {
     this.emitter = new Emitter();
@@ -97,7 +102,7 @@ export default class Database {
    * @param keypath
    */
   async put(table: string, keypath: any) {
-    return await new Promise(async (resolve, reject) => {
+    await new Promise(async (resolve, reject) => {
       if (!Environment.isServiceWorker() && SubscriptionHelper.isUsingSubscriptionWorkaround()) {
         OneSignal.iframePostmam.message(OneSignal.POSTMAM_COMMANDS.REMOTE_DATABASE_PUT, [{table: table, keypath: keypath}], reply => {
           if (reply.data === OneSignal.POSTMAM_COMMANDS.REMOTE_OPERATION_COMPLETE) {
@@ -111,6 +116,7 @@ export default class Database {
         resolve();
       }
     });
+    this.emitter.emit(Database.EVENTS.SET, keypath);
   }
 
   /**
@@ -304,6 +310,10 @@ export default class Database {
   }
   /* End Temp Database Proxy */
 
+  static async on(...args: any[]) {
+    Database.ensureSingletonInstance();
+    return Database.databaseInstance.emitter.on.apply(Database.databaseInstance.emitter, args);
+  }
   static async setSubscription(...args: any[]) {
     Database.ensureSingletonInstance();
     return Database.databaseInstance.setSubscription.apply(Database.databaseInstance, args);
@@ -354,6 +364,6 @@ export default class Database {
   }
   static async get<T>(...args: any[]): Promise<T> {
     Database.ensureSingletonInstance();
-    return Database.databaseInstance.put.apply(Database.databaseInstance, args);
+    return Database.databaseInstance.get.apply(Database.databaseInstance, args);
   }
 }

@@ -38,7 +38,7 @@ export default class SubscriptionHelper {
                                              ServiceWorkerHelper.registerServiceWorker(sw_path + OneSignal.SERVICE_WORKER_UPDATER_PATH);
                                            }
                                            else
-                                             ServiceWorkerHelper.registerServiceWorker(sw_path + OneSignal.SERVICE_WOER_PATH);
+                                             ServiceWorkerHelper.registerServiceWorker(sw_path + OneSignal.SERVICE_WORKER_PATH);
                                          }
                                          else
                                            ServiceWorkerHelper.registerServiceWorker(sw_path + OneSignal.SERVICE_WORKER_UPDATER_PATH);
@@ -114,10 +114,6 @@ export default class SubscriptionHelper {
    *        - We are already in popup or iFrame mode, or this is called from the service worker
    */
   static isUsingSubscriptionWorkaround() {
-    if (Environment.isTest()) {
-      return false;
-    }
-
     if (!OneSignal.config) {
       throw new Error(`(${Environment.getEnv()}) isUsingSubscriptionWorkaround() cannot be called until OneSignal.config exists.`);
     }

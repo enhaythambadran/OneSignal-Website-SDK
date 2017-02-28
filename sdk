@@ -286,8 +286,11 @@ function transformSourceMaps(config) {
           `${railsPublicDir}/${prefix}OneSignalSDKWorker.js`,
           `${railsPublicDir}/${prefix}OneSignalSDKUpdaterWorker.js`
         ])
-      )
+      );
     });
+
+    cloneFile(`${buildDir}/OneSignalSDKStyles.css`, [`${railsPublicSdksDir}/OneSignalSDKStyles.css`]);
+    cloneFile(`${buildDir}/OneSignalSDKStyles.css.map`, [`${railsPublicSdksDir}/OneSignalSDKStyles.css.map`]);
 
     return Promise.all(transformPromises)
                   .then(() => {
