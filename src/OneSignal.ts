@@ -253,7 +253,7 @@ export default class OneSignal {
     const isEnabled = await OneSignal.isPushNotificationsEnabled();
     const notOptedOut = await OneSignal.getSubscription();
     const doNotPrompt = await Database.get<boolean>('Options', 'popoverDoNotPrompt');
-    const isShowingHttpPermissionRequest = OneSignal.httpHelper.isShowingHttpPermissionRequest();
+    const isShowingHttpPermissionRequest = await OneSignal.httpHelper.isShowingHttpPermissionRequest();
 
     if (doNotPrompt === true && (!options || options.force == false)) {
       throw new PermissionMessageDismissedError();
@@ -276,7 +276,7 @@ export default class OneSignal {
     MainHelper.markHttpPopoverShown();
     await InitHelper.ensureSdkStylesLoaded();
     OneSignal.popover = new Popover(OneSignal.config.promptOptions);
-    OneSignal.popover.create();
+    await OneSignal.popover.create();
     log.debug('Showing the HTTP popover.');
     if (OneSignal.notifyButton && OneSignal.notifyButton.launcher.state !== 'hidden') {
       OneSignal.notifyButton.launcher.waitUntilShown()

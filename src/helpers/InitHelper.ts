@@ -164,7 +164,6 @@ export default class InitHelper {
   }
 
   static async ensureDocumentResourceLoaded(url) : Promise<any> {
-    console.log("Called ensureDocumentResourceLoaded", url);
     if (!OneSignal._dynamicResources) {
       OneSignal._dynamicResources = {};
     }

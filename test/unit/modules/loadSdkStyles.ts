@@ -10,12 +10,22 @@ import * as sinon from 'sinon';
 import Bell from "../../../src/bell/Bell";
 import InitHelper from "../../../src/helpers/InitHelper";
 import MainHelper from "../../../src/helpers/MainHelper";
+import { InvalidStateError, InvalidStateReason } from "../../../src/errors/InvalidStateError";
+import Launcher from "../../../src/bell/Launcher";
+import MockDummy from "../../support/mocks/MockDummy";
+import ActiveAnimatedElement from "../../../src/bell/ActiveAnimatedElement";
+import AnimatedElement from "../../../src/bell/AnimatedElement";
+import MockLauncher from "../../support/mocks/MockLauncher";
 
 test.beforeEach(t => {
   t.context.ensureSdkStylesLoadedStub = sinon.stub(InitHelper, 'ensureSdkStylesLoaded');
 });
 
-test("should load if notify button is used", async t => {
+test.afterEach(t => {
+  t.context.ensureSdkStylesLoadedStub.restore();
+});
+
+test.only("should load if notify button is used", async t => {
   await TestEnvironment.initialize({
     initOptions: {
       notifyButton: {
@@ -25,15 +35,15 @@ test("should load if notify button is used", async t => {
     httpOrHttps: HttpHttpsEnvironment.Https
   });
   const notifyButton = new Bell({
-    enable: true
+    enable: true,
+    launcher: new MockLauncher(null)
   });
-  try {
-    await notifyButton.create();
-  } catch (e) { }
+  notifyButton.launcher.bell = notifyButton;
+  await notifyButton.create();
   t.is(t.context.ensureSdkStylesLoadedStub.called, true);
 });
 
-test("should load if HTTP permission request is used", async t => {
+test.only("should load if HTTP permission request is used", async t => {
   await TestEnvironment.initialize({
     initOptions: {
       httpPermissionRequest: {
@@ -42,8 +52,20 @@ test("should load if HTTP permission request is used", async t => {
     },
     httpOrHttps: HttpHttpsEnvironment.Http
   });
-  try {
-    await MainHelper.showHttpPermissionRequestPostModal();
-  } catch (e) { }
+  await MainHelper.showHttpPermissionRequestPostModal();
   t.is(t.context.ensureSdkStylesLoadedStub.called, true);
-})
+});
+
+test.only("should load if slidedown permission message is used", async t => {
+  await TestEnvironment.initialize({
+    initOptions: { },
+    httpOrHttps: HttpHttpsEnvironment.Https
+  });
+  try {
+    await OneSignal.showHttpPrompt();
+  } catch (e) {
+    if (e instanceof InvalidStateError && e.reason === InvalidStateReason.MissingAppId) {
+    } else throw e;
+  }
+  t.is(t.context.ensureSdkStylesLoadedStub.called, true);
+});

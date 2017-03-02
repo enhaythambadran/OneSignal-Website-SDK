@@ -80,7 +80,9 @@ export default class Database {
    */
   async get<T>(table: string, key?: string): Promise<T> {
     return await new Promise<T>(async (resolve) => {
-      if (!Environment.isServiceWorker() && SubscriptionHelper.isUsingSubscriptionWorkaround()) {
+      if (!Environment.isServiceWorker() &&
+          SubscriptionHelper.isUsingSubscriptionWorkaround() &&
+          !Environment.isTest()) {
         OneSignal.iframePostmam.message(OneSignal.POSTMAM_COMMANDS.REMOTE_DATABASE_GET, [{
           table: table,
           key: key
@@ -103,7 +105,9 @@ export default class Database {
    */
   async put(table: string, keypath: any) {
     await new Promise(async (resolve, reject) => {
-      if (!Environment.isServiceWorker() && SubscriptionHelper.isUsingSubscriptionWorkaround()) {
+      if (!Environment.isServiceWorker() &&
+        SubscriptionHelper.isUsingSubscriptionWorkaround() &&
+        !Environment.isTest()) {
         OneSignal.iframePostmam.message(OneSignal.POSTMAM_COMMANDS.REMOTE_DATABASE_PUT, [{table: table, keypath: keypath}], reply => {
           if (reply.data === OneSignal.POSTMAM_COMMANDS.REMOTE_OPERATION_COMPLETE) {
             resolve();
@@ -125,7 +129,9 @@ export default class Database {
    */
   async remove(table: string, keypath?: string) {
     return new Promise(async (resolve, reject) => {
-      if (!Environment.isServiceWorker() && SubscriptionHelper.isUsingSubscriptionWorkaround()) {
+      if (!Environment.isServiceWorker() &&
+        SubscriptionHelper.isUsingSubscriptionWorkaround() &&
+        !Environment.isTest()) {
         OneSignal.iframePostmam.message(OneSignal.POSTMAM_COMMANDS.REMOTE_DATABASE_REMOVE, [{table: table, keypath: keypath}], reply => {
           if (reply.data === OneSignal.POSTMAM_COMMANDS.REMOTE_OPERATION_COMPLETE) {
             resolve();

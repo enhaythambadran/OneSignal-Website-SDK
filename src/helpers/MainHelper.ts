@@ -21,6 +21,7 @@ import Bell from "../bell/Bell";
 import SubscriptionHelper from "./SubscriptionHelper";
 import EventHelper from "./EventHelper";
 import InitHelper from "./InitHelper";
+import { InvalidStateReason, InvalidStateError } from "../errors/InvalidStateError";
 
 
 export default class MainHelper {
@@ -308,29 +309,19 @@ export default class MainHelper {
     }
   }
 
-  static getNotificationIcons() {
-    var url = '';
-    return MainHelper.getAppId()
-                    .then(appId => {
-                      if (!appId) {
-                        return Promise.reject(null);
-                      } else {
-                        url = `${OneSignal._API_URL}apps/${appId}/icon`;
-                        return url;
-                      }
-                    }, () => {
-                      log.debug('No app ID, not getting notification icon for notify button.');
-                      return;
-                    })
-                    .then(url => fetch(url))
-                    .then(response => (response as any).json())
-                    .then(data => {
-                      if (data.errors) {
-                        log.error(`API call %c${url}`, getConsoleStyle('code'), 'failed with:', data.errors);
-                        throw new Error('Failed to get notification icons.');
-                      }
-                      return data;
-                    });
+  static async getNotificationIcons() {
+    const appId = await MainHelper.getAppId();
+    if (!appId) {
+      throw new InvalidStateError(InvalidStateReason.MissingAppId);
+    }
+    var url = `${OneSignal._API_URL}apps/${appId}/icon`;
+    const response = await fetch(url);
+    const data = await response.json();
+    if (data.errors) {
+      log.error(`API call %c${url}`, getConsoleStyle('code'), 'failed with:', data.errors);
+      throw new Error('Failed to get notification icons.');
+    }
+    return data;
   }
 
   static establishServiceWorkerChannel(serviceWorkerRegistration?) {

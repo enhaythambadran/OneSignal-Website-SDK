@@ -6,6 +6,8 @@ import Database from "../../../src/services/Database";
 import { NotificationPermission } from "../../../src/models/NotificationPermission";
 import { Test } from "ava";
 import * as jsdom from 'jsdom';
+import * as DOMStorage from 'dom-storage';
+import Launcher from "../../../src/bell/Launcher";
 
 
 var global = new Function('return this')();
@@ -47,15 +49,22 @@ export class TestEnvironment {
     global.document = global.window.document;
     global.navigator = global.window.navigator;
     global.location = global.window.location;
-    global.XMLHttpRequest = global.window.XMLHttpRequest;
+    global.localStorage = global.window.localStorage = new DOMStorage(null);
+    global.sessionStorage = global.window.sessionStorage = new DOMStorage(null);
   }
 
   static stubNotification(config: TestEnvironmentConfig) {
-    global.Notification = {
+    global.window.Notification = global.Notification = {
       permission: config.permission ? config.permission: NotificationPermission.Default,
       maxActions: 2,
       requestPermission: function() { }
     };
+  }
+
+  static stubNotifyButtonTransitionEvents() {
+    //Launcher.prototype.resize = async function(...args: any[]) { return undefined; }
+    //Launcher.prototype.resize = async function(...args: any[]) { return undefined; }
+    //Launcher.prototype.resize = async function(...args: any[]) { return undefined; }
   }
 
   static async initialize(config: TestEnvironmentConfig = {}) {
@@ -64,6 +73,7 @@ export class TestEnvironment {
     global.OneSignal.config = config.initOptions ? config.initOptions : {};
     global.OneSignal.initialized = true;
     await TestEnvironment.stubEnvironment(config);
+    TestEnvironment.stubNotifyButtonTransitionEvents();
     TestEnvironment.stubNotification(config);
     if (config.environment) {
       Environment.getEnv = () => config.environment;
