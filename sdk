@@ -318,6 +318,7 @@ function transformSourceMapHelper(input, output) {
       '--output',
       output
     ]);
+    console.log(`${chalk.blue('[Transform Source Maps]')} Running sorcery command 'sorcery --input ${input} --output ${output}'`);
     sorcerer.stdout.on('data', data => {
       const message = data.toString();
       console.log(`${chalk.blue('[Transform Source Maps]')} ${message}`);

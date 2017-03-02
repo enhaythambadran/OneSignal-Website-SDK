@@ -19,15 +19,10 @@ export default class Environment {
     return "test";
   }
 
-  static isEs6DebuggingModule() {
-    return false;
-  }
-
   static getEnv() {
     if (typeof window === "undefined") {
       if (typeof WorkerLocation !== "undefined" && location instanceof WorkerLocation)
         return Environment.SERVICE_WORKER;
-      else return Environment.TEST;
     }
     else {
       // If the window is the root top-most level

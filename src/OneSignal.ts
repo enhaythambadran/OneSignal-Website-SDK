@@ -935,8 +935,5 @@ else {
 }
 
 log.info(`%cOneSignal Web SDK loaded (version ${OneSignal._VERSION}, ${Environment.getEnv()} environment).`, getConsoleStyle('bold'));
-if (Environment.isEs6DebuggingModule()) {
-  log.warn('OneSignal: This is a specially built version of the web SDK for debugging ES6 async/await.');
-}
 log.debug(`Current Page URL: ${typeof location === "undefined" ? "NodeJS" : location.href}`);
 log.debug(`Browser Environment: ${Browser.name} ${Browser.version}`);

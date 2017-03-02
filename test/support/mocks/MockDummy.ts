@@ -1,11 +1,7 @@
-import { hasCssClass, addCssClass, removeCssClass, nothing, contains, once } from '../utils';
-import * as log from 'loglevel';
-
-
 export default class MockDummy {
   constructor(...classes: any[]) {
     for (let clazz of classes) {
-      const descriptors = Object.getOwnPropertyDescriptors(clazz);
+      const descriptors = (Object as any).getOwnPropertyDescriptors(clazz);
       const keys = Object.keys(descriptors);
       for (let key of keys) {
         const value = descriptors[key];
