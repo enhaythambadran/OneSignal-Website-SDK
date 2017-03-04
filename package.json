@@ -95,6 +95,7 @@
     "replacement-brunch": "^2.0.4",
     "sass-brunch": "^2.9.0",
     "sinon": "^1.17.7",
+    "sleep": "^5.1.0",
     "sorcery": "^0.10.0",
     "typescript": "latest",
     "uglify-js-brunch": "^2.0.1",

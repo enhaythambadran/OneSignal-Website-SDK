@@ -5,7 +5,7 @@
     "allowUnreachableCode": true,
     "allowUnusedLabels": true,
     "alwaysStrict": true,
-    "diagnostics": true,
+    "diagnostics": false,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
     "module": "commonjs",

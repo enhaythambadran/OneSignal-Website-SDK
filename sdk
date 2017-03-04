@@ -12,6 +12,7 @@ const spawn = require('child_process').spawn;
 const fs = require('fs-extra');
 const path = require('path');
 const microtime = require('microtime')
+const sleep = require('sleep');
 
 const argv = yargs
   .usage('★ OneSignal Web SDK Build Tool ★')
@@ -241,6 +242,26 @@ function runModuleBundler(config) {
   });
 }
 
+function getFileSizeBytes(path) {
+  const stats = fs.statSync(path);
+  return stats.size;
+}
+
+function ensureNonEmptyFileSize(path) {
+  const waitTimeMs = 25;
+  do {
+    var fileSize = getFileSizeBytes(path);
+    if (fileSize == 0) {
+      console.log(`Integrity Check Failed: File size too low. '${path}' file size is ${fileSize} bytes. Waiting ${waitTimeMs}ms for non-empty file...`);
+      sleep.msleep(waitTimeMs);
+    }
+    else {
+      console.log(`Integrity Check Passed: File size of '${path}' is ${fileSize} bytes.`);
+    }
+  }
+  while (fileSize == 0);
+}
+
 /**
  * 6. Transforms multi-level source map back to original source map using Sorcery.
  *
@@ -254,7 +275,16 @@ function transformSourceMaps(config) {
     const buildDir = config.get('build:bundlerOutDir');
     const bundledFilenames = walkSync(path.resolve(buildDir))
                             .map(file => file.slice(file.lastIndexOf('/') + 1));
-    fs.copySync(buildDir, './');
+
+    for (let bundledFilename of bundledFilenames) {
+      ensureNonEmptyFileSize(path.resolve(`${buildDir}/${bundledFilename}`));
+    }
+
+    // Sorcery requires the OneSignalSDK.js file to be at the project root to resolve source maps correctly
+    fs.copySync(buildDir, './', {
+      overwrite: true,
+      errorOnExist: false
+    });
 
     const railsProjectRoot = path.resolve(config.get('build:railsProjectRoot'));
     const railsPublicDir = railsProjectRoot + '/public';
@@ -264,12 +294,12 @@ function transformSourceMaps(config) {
     const unitTestsBundleName = config.get('build:unitTestsBundleName');
 
     /**
-     * Copy: build/OneSignalSDK.js  ==>  OneSignal/public/sdks/OneSignalSDK.js
+     * Copy: ./OneSignalSDK.js  ==>  OneSignal/public/sdks/OneSignalSDK.js
      *                                  OneSignal/public/sdks/OneSignalSDKWorker.js
      *                                  OneSignal/public/OneSignalSDKWorker.js
      *                                  OneSignal/public/OneSignalSDKUpdaterWorker.js
      *
-     * Copy: build/OneSignalSDK.js.map  ==>  OneSignal/public/sdks/OneSignalSDK.js.map
+     * Copy: ./OneSignalSDK.js.map  ==>  OneSignal/public/sdks/OneSignalSDK.js.map
      *                                    OneSignal/public/sdks/OneSignalSDKWorker.js.map
      *                                    OneSignal/public/OneSignalSDKWorker.js.map
      *                                    OneSignal/public/OneSignalSDKUpdaterWorker.js.map
@@ -280,7 +310,7 @@ function transformSourceMaps(config) {
       if (!filename.endsWith('.js'))
         return;
       transformPromises.push(
-        transformSourceMapHelperMultiple(`${sdkBundleName}`, [
+        transformSourceMapHelperMultiple(path.resolve(`./${sdkBundleName}`), [
           `${railsPublicSdksDir}/${prefix}OneSignalSDK.js`,
           `${railsPublicSdksDir}/${prefix}OneSignalSDKWorker.js`,
           `${railsPublicDir}/${prefix}OneSignalSDKWorker.js`,
@@ -318,7 +348,6 @@ function transformSourceMapHelper(input, output) {
       '--output',
       output
     ]);
-    console.log(`${chalk.blue('[Transform Source Maps]')} Running sorcery command 'sorcery --input ${input} --output ${output}'`);
     sorcerer.stdout.on('data', data => {
       const message = data.toString();
       console.log(`${chalk.blue('[Transform Source Maps]')} ${message}`);

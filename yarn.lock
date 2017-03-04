@@ -3019,7 +3019,7 @@ multimatch@^2.1.0:
     arrify "^1.0.0"
     minimatch "^3.0.0"
 
-nan@2.4.x, nan@^2.3.0, nan@^2.3.2:
+nan@2.4.x, nan@>=2.0.0, nan@^2.3.0, nan@^2.3.2:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.4.0.tgz#fb3c59d45fe4effe215f0b890f8adf6eb32d2232"
 
@@ -4106,6 +4106,12 @@ skemata@~0.1.0:
 slash@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/slash/-/slash-1.0.0.tgz#c41f2f6c39fc16d1cd17ad4b5d896114ae470d55"
+
+sleep@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/sleep/-/sleep-5.1.0.tgz#0e0b16205d9f9e3b0a95357744b103e797b4c7c1"
+  dependencies:
+    nan ">=2.0.0"
 
 slice-ansi@0.0.4:
   version "0.0.4"
