@@ -85,19 +85,19 @@ export default class Environment {
   }
 
   static isStaging() {
-    return false;
+    return __STAGING__;
   }
 
   static isDev() {
-    return true;
-  }
-
-  static version() {
-    return "120060";
+    return __DEV__;
   }
 
   static isTest() {
-    return true;
+    return __TEST__;
+  }
+
+  static version() {
+    return __VERSION__;
   }
 
   static isCustomSubdomain() {

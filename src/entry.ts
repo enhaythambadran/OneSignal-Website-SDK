@@ -18,8 +18,7 @@ if (Environment.isBrowser()) {
     if (typeof OneSignal !== "undefined")
       var predefinedOneSignalPushes = OneSignal;
 
-    var OneSignal = require('./OneSignal').default;
-    (window as any).OneSignal = OneSignal;
+    (window as any).OneSignal = require('./OneSignal').default;
 
     if (predefinedOneSignalPushes)
       for (var i = 0; i < predefinedOneSignalPushes.length; i++)
@@ -28,7 +27,5 @@ if (Environment.isBrowser()) {
 }
 else if (Environment.isServiceWorker()) {
   // We're running as the service worker
-
-  var ServiceWorker = require('./service-worker/ServiceWorker');
-  (self as any).OneSignalWorker = ServiceWorker;
+  (self as any).OneSignalWorker = require('./service-worker/ServiceWorker');
 }
